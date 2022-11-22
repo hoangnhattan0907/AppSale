@@ -22,6 +22,7 @@ public class SignInViewModel extends ViewModel {
     private MutableLiveData<AppResource<User>> userResource = new MutableLiveData<>();
     private AuthenticationRepository repository;
     private AppCache appCache;
+
     public SignInViewModel(Context context){
         repository = new AuthenticationRepository(context);
         appCache = AppCache.getInstance(context);

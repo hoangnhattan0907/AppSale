@@ -6,19 +6,16 @@ import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.myapplication.R;
 import com.example.myapplication.common.AppConstant;
 import com.example.myapplication.data.local.AppCache;
 import com.example.myapplication.databinding.ActivitySplashBinding;
 
 public class SplashActivity extends AppCompatActivity {
-    ActivitySplashBinding splashBinding;
 
+    ActivitySplashBinding splashBinding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-
         splashBinding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(splashBinding.getRoot());
 
@@ -30,14 +27,16 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                AppCache appCache = AppCache.getInstance((SplashActivity.this));
+                AppCache appCache = AppCache.getInstance(SplashActivity.this);
                 String token = appCache.getDataString(AppConstant.KEY_TOKEN);
-                Intent intent = null;
-                if(token == null){
+                Intent intent;
+                if (token == null) {
                     intent = new Intent(SplashActivity.this, SignInActivity.class);
-                }else{
+                } else {
                     intent = new Intent(SplashActivity.this, HomeActivity.class);
                 }
+                startActivity(intent);
+                finish();
             }
 
             @Override
