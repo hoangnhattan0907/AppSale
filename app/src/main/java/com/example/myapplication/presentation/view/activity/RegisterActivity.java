@@ -6,63 +6,58 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.ResultReceiver;
 import android.text.SpannableStringBuilder;
-import android.text.SpannedString;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.data.model.AppResource;
 import com.example.myapplication.data.model.User;
-import com.example.myapplication.databinding.ActivitySignInBinding;
-import com.example.myapplication.presentation.viewmodel.SignInViewModel;
+import com.example.myapplication.databinding.ActivityRegisterBinding;
+import com.example.myapplication.presentation.viewmodel.RegisterViewModel;
 import com.example.myapplication.utils.SpannedUtil;
 
-public class SignInActivity extends AppCompatActivity {
-    SignInViewModel signInViewModel;
-    ActivitySignInBinding binding;
+public class RegisterActivity extends AppCompatActivity {
+    ActivityRegisterBinding binding;
+    RegisterViewModel registerViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
-        //view binding
-        binding = ActivitySignInBinding.inflate(getLayoutInflater());
+        binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        signInViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+        registerViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
             @NonNull
             @Override
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                return (T) new SignInViewModel(SignInActivity.this);
+                return (T) new RegisterViewModel(RegisterActivity.this);
             }
-        }).get(SignInViewModel.class);
+        }).get(RegisterViewModel.class);
 
         observer();
         event();
     }
 
     private void observer() {
-        signInViewModel.getUserResource().observe(this, new Observer<AppResource<User>>() {
+        registerViewModel.getUserResource().observe(this, new Observer<AppResource<User>>() {
             @Override
             public void onChanged(AppResource<User> userAppResource) {
-                switch (userAppResource.status){
+                switch (userAppResource.status) {
                     case ERROR:
                         binding.layoutLoading.layoutLoading.setVisibility(View.GONE);
-                        Toast.makeText(SignInActivity.this,userAppResource.message,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, userAppResource.message, Toast.LENGTH_SHORT).show();
                         break;
                     case LOADING:
                         binding.layoutLoading.layoutLoading.setVisibility(View.VISIBLE);
                         break;
                     case SUCCESS:
                         binding.layoutLoading.layoutLoading.setVisibility(View.GONE);
-                        Toast.makeText(SignInActivity.this,"Đăng nhập thành công",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                        finish();
                         break;
                 }
             }
@@ -70,30 +65,33 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void event() {
-        binding.signIn.setOnClickListener(new View.OnClickListener() {
+        binding.registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String name = binding.textEditName.getText().toString();
+                String address = binding.textEditAddress.getText().toString();
                 String email = binding.textEditEmail.getText().toString();
+                String phone = binding.textEditPhone.getText().toString();
                 String password = binding.textEditPassword.getText().toString();
 
-                if (email.isEmpty() || password.isEmpty()){
-                    Toast.makeText(SignInActivity.this, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
+                if (name.isEmpty() || address.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty()){
+                    Toast.makeText(RegisterActivity.this, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                signInViewModel.signIn(email,password);
+                registerViewModel.register(email, password, name, phone, address);
             }
         });
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-        spannableStringBuilder.append("Don't have an account?");
-        spannableStringBuilder.append(SpannedUtil.setClickColorLink("Register", this, new SpannedUtil.OnListenClick() {
+        spannableStringBuilder.append("Already have an account?");
+        spannableStringBuilder.append(SpannedUtil.setClickColorLink(" Login", this, new SpannedUtil.OnListenClick() {
             @Override
             public void onClick() {
-                startActivity(new Intent(SignInActivity.this, RegisterActivity.class));
+                finish();
             }
         }));
-        binding.textViewRegister.setText(spannableStringBuilder);
-        binding.textViewRegister.setHighlightColor(Color.TRANSPARENT);
-        binding.textViewRegister.setMovementMethod(LinkMovementMethod.getInstance());
+        binding.textViewLogin.setText(spannableStringBuilder);
+        binding.textViewLogin.setHighlightColor(Color.TRANSPARENT);
+        binding.textViewLogin.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

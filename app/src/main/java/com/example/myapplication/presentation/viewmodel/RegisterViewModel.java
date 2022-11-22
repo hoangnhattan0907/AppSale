@@ -16,11 +16,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignInViewModel extends ViewModel {
+public class RegisterViewModel extends ViewModel {
     private MutableLiveData<AppResource<User>> userResource = new MutableLiveData<>();
     private AuthenticationRepository repository;
 
-    public SignInViewModel(Context context){
+    public RegisterViewModel(Context context){
         repository = new AuthenticationRepository(context);
     }
 
@@ -28,19 +28,20 @@ public class SignInViewModel extends ViewModel {
         return userResource;
     }
 
-    public void signIn(String email, String password){
+    public void register(String email, String password, String name, String phone, String address){
         userResource.setValue(new AppResource.Loading(null));
-        Call<AppResource<UserDTO>> callSignIn = repository.signIn(email,password);
-        callSignIn.enqueue(new Callback<AppResource<UserDTO>>() {
+        Call<AppResource<UserDTO>> callRegister = repository.register(email, password, name, phone, address);
+
+        callRegister.enqueue(new Callback<AppResource<UserDTO>>() {
             @Override
             public void onResponse(Call<AppResource<UserDTO>> call, Response<AppResource<UserDTO>> response) {
                 if (response.isSuccessful()){
                     AppResource<UserDTO> userDTOAppResource = response.body();
                     UserDTO userDTO = userDTOAppResource.data;
                     User user = new User(userDTO.getEmail(),
-                                        userDTO.getName(),
-                                        userDTO.getPhone(),
-                                        userDTO.getToken());
+                            userDTO.getName(),
+                            userDTO.getPhone(),
+                            userDTO.getToken());
                     userResource.setValue(new AppResource.Success<>(user));
                 }else{
                     Log.d("BBB", response.errorBody().toString());
