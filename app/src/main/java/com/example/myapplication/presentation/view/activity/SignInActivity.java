@@ -63,6 +63,8 @@ public class SignInActivity extends AppCompatActivity {
                     case SUCCESS:
                         binding.layoutLoading.layoutLoading.setVisibility(View.GONE);
                         Toast.makeText(SignInActivity.this,"Đăng nhập thành công",Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+                        finish();
                         break;
                 }
             }

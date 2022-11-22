@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.myapplication.common.AppConstant;
+import com.example.myapplication.data.local.AppCache;
 import com.example.myapplication.data.model.AppResource;
 import com.example.myapplication.data.model.User;
 import com.example.myapplication.data.remote.dto.UserDTO;
@@ -19,9 +21,10 @@ import retrofit2.Response;
 public class SignInViewModel extends ViewModel {
     private MutableLiveData<AppResource<User>> userResource = new MutableLiveData<>();
     private AuthenticationRepository repository;
-
+    private AppCache appCache;
     public SignInViewModel(Context context){
         repository = new AuthenticationRepository(context);
+        appCache = AppCache.getInstance(context);
     }
 
     public LiveData<AppResource<User>> getUserResource(){
@@ -42,6 +45,7 @@ public class SignInViewModel extends ViewModel {
                                         userDTO.getPhone(),
                                         userDTO.getToken());
                     userResource.setValue(new AppResource.Success<>(user));
+                    appCache.saveDataString(AppConstant.KEY_TOKEN, user.getToken());
                 }else{
                     Log.d("BBB", response.errorBody().toString());
                 }
