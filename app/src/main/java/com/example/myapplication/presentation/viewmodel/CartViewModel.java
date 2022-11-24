@@ -25,64 +25,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeViewModel extends ViewModel {
-    private MutableLiveData<AppResource<List<Product>>> listProducts = new MutableLiveData<>();
+public class CartViewModel extends ViewModel {
     private MutableLiveData<AppResource<Cart>> cart = new MutableLiveData<>();
-    private ProductRepository productRepository;
     private CartRepository cartRepository;
 
-    public HomeViewModel(Context context) {
-        productRepository = new ProductRepository(context);
+    public CartViewModel(Context context) {
         cartRepository = new CartRepository(context);
-    }
-
-    public LiveData<AppResource<List<Product>>> getListProducts() {
-        return listProducts;
     }
 
     public LiveData<AppResource<Cart>> getCart() {
         return cart;
-    }
-
-    public void fetchProducts() {
-        listProducts.setValue(new AppResource.Loading(null));
-        Call<AppResource<List<ProductDTO>>> callProducts = productRepository.getProducts();
-        callProducts.enqueue(new Callback<AppResource<List<ProductDTO>>>() {
-            @Override
-            public void onResponse(Call<AppResource<List<ProductDTO>>> call, Response<AppResource<List<ProductDTO>>> response) {
-                if (response.isSuccessful()) {
-                    List<ProductDTO> listProductDTO = response.body().data;
-                    List<Product> listProduct = new ArrayList<>();
-                    for (ProductDTO productDTO : listProductDTO) {
-                        listProduct.add(new Product(
-                                productDTO.getId(),
-                                productDTO.getName(),
-                                productDTO.getAddress(),
-                                productDTO.getPrice(),
-                                productDTO.getImg(),
-                                productDTO.getQuantity(),
-                                productDTO.getGallery())
-                        );
-                    }
-                    listProducts.setValue(new AppResource.Success<>(listProduct));
-                } else {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                        String message = jsonObject.getString("message");
-                        listProducts.setValue(new AppResource.Error<>(message));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AppResource<List<ProductDTO>>> call, Throwable t) {
-                listProducts.setValue(new AppResource.Error<>(t.getMessage()));
-            }
-        });
     }
 
     public void fetchCart() {
@@ -126,9 +78,9 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
-    public void addCart(String idProduct) {
+    public void updateCart(String idProduct, String idCart, int quantity) {
         cart.setValue(new AppResource.Loading(null));
-        Call<AppResource<CartDTO>> callCart = cartRepository.addCart(idProduct);
+        Call<AppResource<CartDTO>> callCart = cartRepository.updateCart(idProduct,idCart,quantity);
         callCart.enqueue(new Callback<AppResource<CartDTO>>() {
             @Override
             public void onResponse(Call<AppResource<CartDTO>> call, Response<AppResource<CartDTO>> response) {
@@ -158,6 +110,22 @@ public class HomeViewModel extends ViewModel {
                         e.printStackTrace();
                     }
                 }
+            }
+
+            @Override
+            public void onFailure(Call<AppResource<CartDTO>> call, Throwable t) {
+                cart.setValue(new AppResource.Error<>(t.getMessage()));
+            }
+        });
+    }
+
+    public void cartConform(String idCart, boolean status) {
+        cart.setValue(new AppResource.Loading(null));
+        Call<AppResource<CartDTO>> callCart = cartRepository.cartConform(idCart,status);
+        callCart.enqueue(new Callback<AppResource<CartDTO>>() {
+            @Override
+            public void onResponse(Call<AppResource<CartDTO>> call, Response<AppResource<CartDTO>> response) {
+
             }
 
             @Override

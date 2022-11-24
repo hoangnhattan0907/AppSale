@@ -27,4 +27,19 @@ public class CartRepository {
         map.put("id_product", idProduct);
         return apiService.addCart(map);
     }
+
+    public Call<AppResource<CartDTO>> updateCart(String idProduct, String idCart, int quantity) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id_product", idProduct);
+        map.put("id_cart",idCart);
+        map.put("quantity", quantity);
+        return apiService.updateCart(map);
+    }
+
+    public Call<AppResource<CartDTO>> cartConform(String idCart, boolean status) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("id_cart",idCart);
+        map.put("status", status);
+        return apiService.cartConform(map);
+    }
 }

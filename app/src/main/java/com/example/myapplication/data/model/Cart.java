@@ -1,12 +1,22 @@
 package com.example.myapplication.data.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Cart {
+public class  Cart implements Serializable {
     private String id;
     private List<Product> products;
     private String idUser;
     private Integer price;
+    private String dateCreated;
+
+    public Cart(String id, List<Product> products, String idUser, Integer price, String dateCreated) {
+        this.id = id;
+        this.products = products;
+        this.idUser = idUser;
+        this.price = price;
+        this.dateCreated = dateCreated;
+    }
 
     public Cart(String id, List<Product> products, String idUser, Integer price) {
         this.id = id;
@@ -45,6 +55,14 @@ public class Cart {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public String getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     @Override

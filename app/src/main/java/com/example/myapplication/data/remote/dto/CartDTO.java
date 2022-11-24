@@ -17,6 +17,9 @@ public class CartDTO {
     @SerializedName("price")
     @Expose
     private Integer price;
+    @SerializedName("date_created")
+    @Expose
+    private String dateCreated;
 
     public String getId() {
         return id;
@@ -49,6 +52,15 @@ public class CartDTO {
     public void setPrice(Integer price) {
         this.price = price;
     }
+
+    public String getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
 
     @Override
     public String toString() {

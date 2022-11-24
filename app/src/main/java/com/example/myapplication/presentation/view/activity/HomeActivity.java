@@ -26,10 +26,10 @@ import com.example.myapplication.presentation.viewmodel.HomeViewModel;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
-    ActivityHomeBinding homeBinding;
-    ProductAdapter productAdapter;
-    HomeViewModel homeViewModel;
-    TextView tvCountCart;
+    private ActivityHomeBinding homeBinding;
+    private ProductAdapter productAdapter;
+    private HomeViewModel homeViewModel;
+    private TextView tvCountCart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,18 +88,29 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.item_menu_cart:
                 startActivity(new Intent(HomeActivity.this, CartActivity.class));
                 break;
+            case  R.id.item_menu_history_order:
+                startActivity(new Intent(HomeActivity.this, HistoryActivity.class));
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void event() {
+        productAdapter.setOnItemClickFood(new ProductAdapter.OnItemClickProduct() {
+            @Override
+            public void onClick(int position) {
+                homeViewModel.addCart(productAdapter.getListProducts().get(position).getId());
+            }
+        });
+    }
+
+    private void observerData() {
         homeViewModel.getListProducts().observe(this, new Observer<AppResource<List<Product>>>() {
             @Override
             public void onChanged(AppResource<List<Product>> listAppResource) {
                 switch (listAppResource.status) {
                     case ERROR:
                         homeBinding.layoutLoading.layoutLoading.setVisibility(View.GONE);
-                        Toast.makeText(HomeActivity.this, listAppResource.message, Toast.LENGTH_SHORT).show();
                         break;
                     case LOADING:
                         homeBinding.layoutLoading.layoutLoading.setVisibility(View.VISIBLE);
@@ -118,7 +129,6 @@ public class HomeActivity extends AppCompatActivity {
                 switch (cartAppResource.status) {
                     case ERROR:
                         homeBinding.layoutLoading.layoutLoading.setVisibility(View.GONE);
-                        Toast.makeText(HomeActivity.this, cartAppResource.message, Toast.LENGTH_SHORT).show();
                         break;
                     case LOADING:
                         homeBinding.layoutLoading.layoutLoading.setVisibility(View.VISIBLE);
@@ -134,16 +144,5 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-
-        productAdapter.setOnItemClickFood(new ProductAdapter.OnItemClickProduct() {
-            @Override
-            public void onClick(int position) {
-                homeViewModel.addCart(productAdapter.getListProducts().get(position).getId());
-            }
-        });
-    }
-
-    private void observerData() {
-
     }
 }

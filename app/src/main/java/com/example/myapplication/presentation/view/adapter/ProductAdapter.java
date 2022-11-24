@@ -1,6 +1,8 @@
 package com.example.myapplication.presentation.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +15,15 @@ import com.example.myapplication.R;
 import com.example.myapplication.common.AppConstant;
 import com.example.myapplication.data.model.Product;
 import com.example.myapplication.databinding.LayoutItemProductBinding;
+import com.example.myapplication.presentation.view.activity.DetailActivity;
 import com.example.myapplication.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
-    List<Product> listProducts;
-    Context context;
+    private List<Product> listProducts;
+    private Context context;
     private OnItemClickProduct onItemClickProduct;
 
     public ProductAdapter() {
@@ -72,6 +75,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     }
                 }
             });
+
         }
 
         public void bind(Context context, Product product) {
@@ -82,6 +86,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     .load(AppConstant.BASE_URL + product.getImg())
                     .placeholder(R.drawable.ic_logo)
                     .into(binding.imageView);
+            binding.buttonDetail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("product", product);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 

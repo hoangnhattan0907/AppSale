@@ -55,7 +55,6 @@ public class SignInActivity extends AppCompatActivity {
                 switch (userAppResource.status){
                     case ERROR:
                         binding.layoutLoading.layoutLoading.setVisibility(View.GONE);
-                        Toast.makeText(SignInActivity.this,userAppResource.message,Toast.LENGTH_SHORT).show();
                         break;
                     case LOADING:
                         binding.layoutLoading.layoutLoading.setVisibility(View.VISIBLE);

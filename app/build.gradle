@@ -67,4 +67,10 @@ dependencies {
 
     // SpinKit
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+
+    // ViewPager2
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    // RoundedImageView
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }

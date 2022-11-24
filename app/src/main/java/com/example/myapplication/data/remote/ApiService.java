@@ -29,4 +29,12 @@ public interface ApiService {
     @POST("/cart/add")
     Call<AppResource<CartDTO>> addCart(@Body HashMap<String, Object> body);
 
+    @POST("/cart/update")
+    Call<AppResource<CartDTO>> updateCart(@Body HashMap<String, Object> body);
+
+    @POST("/cart/conform")
+    Call<AppResource<CartDTO>> cartConform(@Body HashMap<String, Object> body);
+
+    @POST("/order/history")
+    Call<AppResource<List<CartDTO>>> orderHistory();
 }
